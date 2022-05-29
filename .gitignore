@@ -2,3 +2,16 @@
 .Rhistory
 .RData
 .Ruserdata
+.gitignore
+Figures/*
+Output/*
+Paper/*
+Documents/*
+References/*
+
+*.html
+*.RData
+*.rds
+phantomjsdriver.log
+*.sqlite
+*.png
