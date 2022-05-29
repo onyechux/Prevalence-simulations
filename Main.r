@@ -19,5 +19,17 @@ invisible(lapply(packages, library, character.only = TRUE))
 dir.create(here("Figures"))
 dir.create(here("Output"))
 
-#Run the script
+######################
+# Optimizing cluster #
+######################
+
+
+##################
+# Baseline model #
+##################
 source(here("scripts","2Baseline.R"))
+baseline(nrpl=5000)
+
+#############
+# Scenarios #
+#############
