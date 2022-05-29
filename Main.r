@@ -28,7 +28,7 @@ dir.create(here("Output"))
 # Baseline model #
 ##################
 source(here("scripts","2Baseline.R"))
-baseline(nrpl=5000)
+baseline(nrpl=50)
 
 #############
 # Scenarios #
