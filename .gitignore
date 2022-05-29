@@ -3,6 +3,9 @@
 .RData
 .Ruserdata
 .gitignore
+.Rprofile
+.lock
+
 Figures/*
 Output/*
 Paper/*
