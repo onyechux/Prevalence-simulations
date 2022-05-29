@@ -1,4 +1,3 @@
-setwd("~/Prevalence simulations/data")
 
 FG = read_excel(here("Data","PrevComp.xlsx"),sheet = "Sheet1",na =".")
 
