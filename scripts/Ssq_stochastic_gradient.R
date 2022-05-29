@@ -1,17 +1,6 @@
 #####Learning clustering####
 
-#Packages to be used
-packages<-c("here","tidyverse","ggplot2","gridExtra","lme4","lmtest","readxl")
-
-# Install packages not yet installed
-installed_packages <- packages %in% rownames(installed.packages())
-if (any(installed_packages == FALSE)) {
-  install.packages(packages[!installed_packages])
-}
-
-# Packages loading
-invisible(lapply(packages, library, character.only = TRUE))  
-
+cluster<-function(rpl,grad){
 
 ##Calling each room from the data data##
 FG = read_excel(here("Data","PrevComp.xlsx"),sheet = "Sheet1",na =".")
@@ -34,7 +23,7 @@ Rm11 = subset(FG, FG$ROOM==1)#All negatives
 
 arg_min=NULL
 
-for (k in 1:5000){
+for (k in 1:rpl){ #Each iteration is a different room by chance
   cat("\n\n node: ", k, "\n")
   tempo_inicial = proc.time()
   
@@ -53,7 +42,7 @@ for (k in 1:5000){
 #Sampling the room
     
   
-    Rm<-get(paste("Rm",sample(c(1:4,6,8,10),1),sep=""))
+    Rm<-get(paste("Rm",sample(c(1:4,6,8,10:11),1),sep=""))
     Rm <- Rm[order(-Rm$Prop_pos),] #Rearranging rooms to have the litters with highest
     
     #Specifying prevalence and number 
@@ -70,8 +59,13 @@ for (k in 1:5000){
     
 #number of positive pigs in front
 
-
-  for(j in 1:300){ #Each iteration is a different room by chance
+    pb <- txtProgressBar(min = 0,      # Minimum value of the progress bar
+                         max = grad, # Maximum value of the progress bar
+                         style = 3,    # Progress bar style (also available style = 1 and style = 2)
+                         width = 50,   # Progress bar width. Defaults to getOption("width")
+                         char = "=")   # Character used to create the bar
+    
+  for(j in 1:grad){ #stochastic gradient
     
     
     
@@ -93,16 +87,17 @@ for (k in 1:5000){
   } #End of the recursive Binomial model
   prevc<-data.frame(yy=N/totc) #the proportion of positive pigs per litter in each room
   
-  kc = sum((sortrm - prevc)^2)/nc  #Sum of squares difference for matched litters per room
+  kc = sum((sortrm - sort(prevc$yy,decreasing = T))^2)/nc  #Sum of squares difference for matched litters per room
   
   Results[j] = kc 
   
+  setTxtProgressBar(pb, j)
   
-} # End of the stochastic simulation node j
-
+  } # End of the stochastic simulation node j
+    close(pb)
+    
 
 #Visualizing results
-#plot(Results~cck) #the clustering with the lowest mssq is chosen
 
 final_data<-cbind.data.frame(Results,cck)
 
@@ -110,7 +105,21 @@ arg_min[k]<-final_data[which.min(final_data$Results),][2]
 
 }
 
-#Visualize and getting estimates
-df=unlist(arg_min)
-hist(df)
-summary(df)
+#Results
+summa=list(
+summa=summary(unlist(arg_min)),
+
+IC=c(quantile(unlist(arg_min),0.025),quantile(unlist(arg_min),0.5),quantile(unlist(arg_min),0.975))
+)
+
+dir.create(here("Output","Cluster"),showWarnings = F)
+
+capture.output(summa, file = here("Output","Cluster","Summary.txt"))   
+
+dir.create(here("Figures","Cluster"),showWarnings = F)
+
+png(here("Figures","Cluster","Cluster_opt.png"))
+hist(unlist(arg_min),main="",xlab="Clustering parameter")
+dev.off()
+
+}

@@ -14,7 +14,7 @@ if (any(installed_packages == FALSE)) {
 # Packages loading
 invisible(lapply(packages, library, character.only = TRUE))  
 
-#Creating dir.
+#Creating dir
 
 dir.create(here("Figures"))
 dir.create(here("Output"))
@@ -22,12 +22,14 @@ dir.create(here("Output"))
 ######################
 # Optimizing cluster #
 ######################
+source(here("Scripts","Ssq_stochastic_gradient.R"))
+cluster(rpl=5000,grad=300)
 
 
 ##################
 # Baseline model #
 ##################
-source(here("scripts","2Baseline.R"))
+source(here("Scripts","Baseline.R"))
 baseline(nrpl=50)
 
 #############
