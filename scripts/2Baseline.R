@@ -1,4 +1,3 @@
-setwd("~/Prevalence simulations/data")
 
 FG = read_excel(here("Data","PrevComp.xlsx"),sheet = "Sheet1",na =".")
 
@@ -40,6 +39,7 @@ ALPlowerquantile = NULL
 TLPlowerquantile = NULL
 ALPupperquantile = NULL
 TLPupperquantile = NULL
+yu = NULL
 
 #Truncated Poisson sampling function
 poisrange <- function(n, lambda, smallest, highest){
