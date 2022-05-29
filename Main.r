@@ -35,3 +35,5 @@ baseline(nrpl=50)
 #############
 # Scenarios #
 #############
+source(here("Scripts","Scenarios.R"))
+scenarios(nrpl=5000)
