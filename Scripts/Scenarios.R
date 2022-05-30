@@ -22,8 +22,18 @@ MF2 = glmer(FOFC~Prop_pos + (1|Farm), family = binomial(link = "logit"), data = 
 
 source(here("Data", "data.R"))
 
-#Model as function
-scenarios <- function(nrpl){
+
+scenarios <- function(nrpl,nbase,sce_n,cbase,sce_c){ #Model as function
+  
+  sce_n<-c(sce_n,rep(nbase,length(sce_n)))
+  sce_c<-c(rep(cbase,length(sce_c)),sce_c)
+  
+  
+  
+  ALP_me<-vector(mode = "list", length = length(sce_n))
+  TLP_me<-vector(mode = "list", length = length(sce_c))
+  
+  
   
 for (s in 1:length(sce_n)){ #Scenarios
   cat("\n\n Scenario: ", s,"n=",sce_n[s]," c=",sce_c[s],"\n")

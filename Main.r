@@ -23,17 +23,17 @@ dir.create(here("Output"))
 # Optimizing cluster #
 ######################
 source(here("Scripts","Ssq_stochastic_gradient.R"))
-cluster(rpl=5000,grad=300)
+cluster(nrpl=5000,grad=300)
 
 
 ##################
 # Baseline model #
 ##################
 source(here("Scripts","Baseline.R"))
-baseline(nrpl=50)
+baseline(nrpl=5000,n=56,c=0.63)
 
 #############
 # Scenarios #
 #############
 source(here("Scripts","Scenarios.R"))
-scenarios(nrpl=5000)
+scenarios(nrpl=5000,nbase=56,sce_n=c(10,30,60,90),cbase=0.63,sce_c=c(0.01,0.3,0.7,0.9))

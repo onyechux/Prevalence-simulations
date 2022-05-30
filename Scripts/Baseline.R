@@ -24,7 +24,7 @@ MF2 = glmer(FOFC~Prop_pos + (1|Farm), family = binomial(link = "logit"), data = 
 source(here("Data", "data.R"))
 
 #Model as function
-baseline <- function(nrpl){
+baseline <- function(nrpl,n,c){
 
 for (w in 1:length(prevalence)){ ##Iterations for each prevalence
   cat("\n\n Scenario: ", w,":",paste0(prevalence[w]*100,"%",sep=""),"\n")

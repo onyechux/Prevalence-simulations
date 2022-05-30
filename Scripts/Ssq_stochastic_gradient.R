@@ -1,6 +1,6 @@
 #####Learning clustering####
 
-cluster<-function(rpl,grad){
+cluster<-function(nrpl,grad){
 
 ##Calling each room from the data data##
 FG = read_excel(here("Data","PrevComp.xlsx"),sheet = "Sheet1",na =".")
@@ -23,7 +23,7 @@ Rm11 = subset(FG, FG$ROOM==1)#All negatives
 
 arg_min=NULL
 
-for (k in 1:rpl){ #Each iteration is a different room by chance
+for (k in 1:nrpl){ #Each iteration is a different room by chance
   cat("\n\n node: ", k, "\n")
   tempo_inicial = proc.time()
   
