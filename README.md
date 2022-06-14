@@ -4,7 +4,7 @@
 
 # Description: 
 
-This is an applied study assessing the effect of pooling fluid oral samples on the true and apparent litter prevalence.
+This is an applied study assessing the relationship between pig-level prevalence, true litter prevalence and apparent (as determined by FOF testing) litter prevalence.
 
 # Authors: 
 
