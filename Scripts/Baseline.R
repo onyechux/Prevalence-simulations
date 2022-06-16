@@ -97,6 +97,7 @@ for (w in 1:length(prevalence)){ ##Iterations for each prevalence
   
   
   dir.create(here("Output","Baseline"),showWarnings = F) #Create the directory for the output
+  dir.create(here("Figures","Baseline"),showWarnings = F) #Create the directory for the figure
   
   capture.output(final, file = here("Output","Baseline","Baseline.txt"), append=FALSE) #Saving crude outcome
   
@@ -133,5 +134,21 @@ for (w in 1:length(prevalence)){ ##Iterations for each prevalence
   
   capture.output(plot_data, file = here("Output", "Baseline","Plot_data.txt"), append=FALSE) #Saving summary outcome
   
+  
+  plot_data1<-Plot_data[,c(1:3)]%>%
+    gather(key="true_false",value="Prevalence",-prev1) #creating dataset for plot
+  
+  ggplot(plot_data1,aes(x=prev1*100,y=Prevalence,group=true_false))+
+    theme_minimal()+
+    geom_line(aes(linetype = true_false))+
+    xlab("Within litter prevalence")+
+    ylab("Model prevalence")+
+    theme(legend.position="right")+
+    scale_linetype_manual(values=c(1,2),labels=c("Apparent","True"))+
+    labs(linetype = "Litter prevalence")
+    
+ggsave(here("Figures","Baseline","Figure1.png"),width = 7,height = 5,device = "png",dpi=300)  #save the plot
+  
+    
   
 } # End of the function
