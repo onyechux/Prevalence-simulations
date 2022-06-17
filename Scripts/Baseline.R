@@ -135,14 +135,14 @@ for (w in 1:length(prevalence)){ ##Iterations for each prevalence
   capture.output(plot_data, file = here("Output", "Baseline","Plot_data.txt"), append=FALSE) #Saving summary outcome
   
   
-  plot_data1<-Plot_data[,c(1:3)]%>%
+  plot_data1<-plot_data[,c(1:3)]%>%
     gather(key="true_false",value="Prevalence",-prev1) #creating dataset for plot
   
   ggplot(plot_data1,aes(x=prev1*100,y=Prevalence,group=true_false))+
-    theme_minimal()+
+    theme_bw()+
     geom_line(aes(linetype = true_false))+
-    xlab("Within litter prevalence")+
-    ylab("Model prevalence")+
+    xlab("pig level prevalence")+
+    ylab("Litter prevalence")+
     theme(legend.position="right")+
     scale_linetype_manual(values=c(1,2),labels=c("Apparent","True"))+
     labs(linetype = "Litter prevalence")

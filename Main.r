@@ -3,7 +3,7 @@ rm(list = ls())
 
 #Packages to be used
 packages<-c("here","tidyverse","ggplot2","gridExtra","lme4","lmtest","readxl", "DT",
-            "ggridges","viridis","hrbrthemes","tidyr","dplyr","forcats")
+            "ggridges","viridis","hrbrthemes","tidyr","dplyr","forcats","ggpubr")
 
 # Install packages not yet installed
 installed_packages <- packages %in% rownames(installed.packages())
@@ -36,4 +36,4 @@ baseline(nrpl=5000,n=56,c=0.63)
 # Scenarios #
 #############
 source(here("Scripts","Scenarios.R"))
-scenarios(nrpl=5000,nbase=56,sce_n=c(10,30,60,90),cbase=0.63,sce_c=c(0.01,0.3,0.7,0.9))
+scenarios(nrpl=5000,nbase=56,sce_n=c(10,30,60,90),cbase=0.63,sce_c=c(0.01,0.3,0.6,0.9))

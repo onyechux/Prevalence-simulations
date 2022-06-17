@@ -116,10 +116,33 @@ for (s in 1:length(sce_n)){ #Scenarios
 
   } # End of S Scenarios
   dir.create(here("Output","Scenarios"),showWarnings = F) #Create the directory for the output
+  dir.create(here("Figures","Scenarios"),showWarnings = F) #Create the directory for the figure
   
   sce_list<-list(ALP=ALP_me,TLP=TLP_me) #Saving output
   
+  
   capture.output(sce_list, file = here("Output","Scenarios","Scenarios.txt"), append=FALSE) #Saving crude outcome
   
+  all_data<-cbind.data.frame(cbind("10"=ALP_me[[1]],"30"=ALP_me[[2]],"50"=ALP_me[[3]],"90"=ALP_me[[4]], prevalence))#ALP vs Crates
+  all_data2<-cbind.data.frame(cbind("0.01"=ALP_me[[5]],"0.3"=ALP_me[[6]],"0.6"=ALP_me[[7]], "0.9"=ALP_me[[8]],prevalence)) #ALP vs Clustering
+  all_data3<-cbind.data.frame(cbind("10"=TLP_me[[1]],"30"=TLP_me[[2]],"50"=TLP_me[[3]],"90"=TLP_me[[4]], prevalence)) #TLP vs crates
+  all_data4<-cbind.data.frame(cbind("0.01"=TLP_me[[5]],"0.3"=TLP_me[[6]],"0.6"=TLP_me[[7]], "0.9"=TLP_me[[8]],prevalence)) #TLP vs Clustering
+  
+  ALP_crate<-all_data%>%gather(key="Number_of_crates",value="ALP",-prevalence)#vs crates
+  TLP_crate<-all_data3%>%gather(key="Number_of_crates",value="TLP",-prevalence)#vs crates
+  ALP_clust<-all_data2%>%gather(key="Clustering_level",value="ALP",-prevalence)#vs Clustering
+  TLP_clust<-all_data4%>%gather(key="Clustering_level",value="TLP",-prevalence)#vs Clustering
+  
+  G1<-ggplot(ALP_crate,aes(x=prevalence,y=ALP,color=Number_of_crates))+
+    geom_line()
+  G2<-ggplot(TLP_crate,aes(x=prevalence,y=TLP,color=Number_of_crates))+
+    geom_line()
+  G3<-ggplot(ALP_clust,aes(x=prevalence,y=ALP,color=Clustering_level))+
+    geom_line()
+  G4<-ggplot(TLP_clust,aes(x=prevalence,y=TLP,color=Clustering_level))+
+    geom_line()
+    
+  ggarrange(G1, G2, G3, G4, widths = c(5.5,5,5))
+  ggsave(here("Figures","Scenarios","Figure2.png"),width = 7,height = 5,device = "png",dpi=300)  #save the plot
   
 } # End of the function
