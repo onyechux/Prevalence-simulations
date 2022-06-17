@@ -133,6 +133,14 @@ for (s in 1:length(sce_n)){ #Scenarios
   ALP_clust<-all_data2%>%gather(key="Clustering_level",value="ALP",-prevalence)#vs Clustering
   TLP_clust<-all_data4%>%gather(key="Clustering_level",value="TLP",-prevalence)#vs Clustering
   
+  # This is how the plot should be coded. Titles in axis, legends and final details should be implemented
+  ggplot(data, aes(x=piglet_prevalence,y=litter_prev,color=appaten_true))+
+  theme_minimal()+
+  facet_grid(crates~cluster)+
+  geom_line()
+  ggsave(here("Figures","Scenarios","Figure2.png"),width = 7,height = 5,device = "png",dpi=300)  #save the plot
+  
+  
   G1<-ggplot(ALP_crate,aes(x=prevalence,y=ALP,color=Number_of_crates))+
     geom_line()
   G2<-ggplot(TLP_crate,aes(x=prevalence,y=TLP,color=Number_of_crates))+
@@ -143,6 +151,6 @@ for (s in 1:length(sce_n)){ #Scenarios
     geom_line()
     
   ggarrange(G1, G2, G3, G4, widths = c(5.5,5,5))
-  ggsave(here("Figures","Scenarios","Figure2.png"),width = 7,height = 5,device = "png",dpi=300)  #save the plot
+  
   
 } # End of the function
