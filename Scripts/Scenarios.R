@@ -25,8 +25,10 @@ source(here("Data", "data.R"))
 
 scenarios <- function(nrpl,nbase,sce_n,cbase,sce_c){ #Model as function
   
-  sce_n<-c(sce_n,rep(nbase,length(sce_n)))
-  sce_c<-c(rep(cbase,length(sce_c)),sce_c)
+  
+  sce<-crossing(sce_n,sce_c)
+  sce_n<-sce$sce_n
+  sce_c<-sce$sce_c
   
   
   
@@ -115,42 +117,70 @@ for (s in 1:length(sce_n)){ #Scenarios
     
 
   } # End of S Scenarios
+  
+  
   dir.create(here("Output","Scenarios"),showWarnings = F) #Create the directory for the output
   dir.create(here("Figures","Scenarios"),showWarnings = F) #Create the directory for the figure
   
-  sce_list<-list(ALP=ALP_me,TLP=TLP_me) #Saving output
   
   
-  capture.output(sce_list, file = here("Output","Scenarios","Scenarios.txt"), append=FALSE) #Saving crude outcome
+  #Creating labels for crates
+  crates<-list()
+
+  lab1<-unique(sce_n)
+  for (i in 1:length(lab1)){
+  crates[[i]]<-c(rep(lab1[i],length(lab1)*length(prevalence)))
+   }
+  crates<-unlist(crates)
   
-  all_data<-cbind.data.frame(cbind("10"=ALP_me[[1]],"30"=ALP_me[[2]],"50"=ALP_me[[3]],"90"=ALP_me[[4]], prevalence))#ALP vs Crates
-  all_data2<-cbind.data.frame(cbind("0.01"=ALP_me[[5]],"0.3"=ALP_me[[6]],"0.6"=ALP_me[[7]], "0.9"=ALP_me[[8]],prevalence)) #ALP vs Clustering
-  all_data3<-cbind.data.frame(cbind("10"=TLP_me[[1]],"30"=TLP_me[[2]],"50"=TLP_me[[3]],"90"=TLP_me[[4]], prevalence)) #TLP vs crates
-  all_data4<-cbind.data.frame(cbind("0.01"=TLP_me[[5]],"0.3"=TLP_me[[6]],"0.6"=TLP_me[[7]], "0.9"=TLP_me[[8]],prevalence)) #TLP vs Clustering
+  #Creating labels for cluster
+  cluster<-list()
   
-  ALP_crate<-all_data%>%gather(key="Number_of_crates",value="ALP",-prevalence)#vs crates
-  TLP_crate<-all_data3%>%gather(key="Number_of_crates",value="TLP",-prevalence)#vs crates
-  ALP_clust<-all_data2%>%gather(key="Clustering_level",value="ALP",-prevalence)#vs Clustering
-  TLP_clust<-all_data4%>%gather(key="Clustering_level",value="TLP",-prevalence)#vs Clustering
+  lab2<-unique(sce_c)
   
-  # This is how the plot should be coded. Titles in axis, legends and final details should be implemented
-  ggplot(data, aes(x=piglet_prevalence,y=litter_prev,color=appaten_true))+
-  theme_minimal()+
-  facet_grid(crates~cluster)+
-  geom_line()
-  ggsave(here("Figures","Scenarios","Figure2.png"),width = 7,height = 5,device = "png",dpi=300)  #save the plot
+  for (i in 1:length(lab2)){
+    cluster[[i]]<-c(rep(lab2[i],length(prevalence)))
+  }
+  
+  cluster<-rep(cluster,length(lab2))
+  
+  cluster<-unlist(cluster)
   
   
-  G1<-ggplot(ALP_crate,aes(x=prevalence,y=ALP,color=Number_of_crates))+
-    geom_line()
-  G2<-ggplot(TLP_crate,aes(x=prevalence,y=TLP,color=Number_of_crates))+
-    geom_line()
-  G3<-ggplot(ALP_clust,aes(x=prevalence,y=ALP,color=Clustering_level))+
-    geom_line()
-  G4<-ggplot(TLP_clust,aes(x=prevalence,y=TLP,color=Clustering_level))+
-    geom_line()
-    
-  ggarrange(G1, G2, G3, G4, widths = c(5.5,5,5))
+  #Get the simulation results
+  lit_prev1<-unlist(ALP_me)
+  lit_prev2<-unlist(TLP_me)
   
+  #Labels for APL or TLP
+  LP1<-rep("ALP",length(sce_n)*length(sce_c)*length(prevalence))
+  LP2<-rep("TLP",length(sce_n)*length(sce_c)*length(prevalence))
+  
+  #Piglet prevalence
+  pig_prev<-rep(prevalence,length(sce_n)*length(sce_c))
+  
+  
+  #creating one dataset to ALP and another to TLP
+  data0<-cbind.data.frame(lit_prev=lit_prev1,crates,cluster,LP=LP1,pig_prev)
+  
+  data1<-cbind.data.frame(lit_prev=lit_prev2,crates,cluster,LP=LP2,pig_prev)
+  
+  #Combinig both
+  data<-rbind.data.frame(data0,data1)
+  
+  #Save the plot
+  ggplot(data, aes(x=pig_prev,y=lit_prev,color=LP))+
+    theme_minimal()+
+    facet_grid(crates~cluster)+
+    geom_line()+
+    ylab("Litter prevalence")+
+    xlab("Piglet prevalence")+
+    theme(legend.title=element_blank())
+  
+  
+  ggsave(here("Figures","Scenarios","Figure2.png"),width = 7,height = 5,device = "png",dpi=300,bg = "white")  #save the plot
+  
+  
+  #Sva the dataframe
+  write.table(data,file=here("Output", "Scenarios","Scenarios.txt"),sep=",")
   
 } # End of the function
