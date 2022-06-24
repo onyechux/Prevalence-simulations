@@ -6,7 +6,8 @@ FG = read_excel(here("Data","PrevComp.xlsx"),sheet = "Sheet1",na =".")
 
 FG$Farm = as.factor(FG$Farm)
 FG$ROOM = as.factor(FG$ROOM)
-FG$FOFC=as.factor(FG$FOFC)
+FG$FOFC2 = FG$FOFC
+FG$FOFC=as.factor(FG$FOFC2)
 FG$ROOM=as.factor(FG$ROOM)
 #Categorical variable of FOF positive (1) or negative (0)
 
@@ -14,6 +15,36 @@ FG$ROOM=as.factor(FG$ROOM)
 
 MF2 = glmer(FOFC~Prop_pos + (1|Farm), family = binomial(link = "logit"), data = FG, na.action = na.omit)
 
+#################################################################
+#Creating plot to compare the observed data and predictive model#
+#################################################################
+
+#The values for predicted FOF status by WLP
+pred.data <- data.frame(Prop_pos = FG$Prop_pos)
+pred.actual <- cbind(cbind(predict(MF2,  pred.data, type = "response", re.form = NA)),data.frame(FG$FOFC2))
+colnames(pred.actual) <- c("predicted","observed")
+
+pred.final = cbind(stack(pred.actual),pred.data)
+colnames(pred.final) <- c("Value","Data","WLP")
+
+#Creating directories for output and figures 
+dir.create(here("Output","Baseline_Model_evaluation"),showWarnings = F) #Create the directory for the output
+dir.create(here("Figures","Baseline_Model_evaluation"),showWarnings = F) #Create the directory for the figure
+
+capture.output(pred.final, file = here("Output","Baseline_Model_evaluation","Baseline_Model_evaluation.txt"), append=FALSE) #Saving crude outcome
+
+#Plot proper
+ggplot(pred.final, aes(x=WLP,y=Value,color=Data))+
+  geom_point(alpha = .5)+
+  stat_smooth(method="glm", se=FALSE, method.args = list(family=binomial))+
+  labs(x = "Within-litter prevalence", 
+       y = "Probability of PRRSV detection in FOF", title = "Probability of PRRSV detection in FOF by Within-litter prevalence") +
+  theme_linedraw() +
+  theme(plot.title = element_text(size = 13L, face = "bold", hjust = 0.5), axis.title.y = element_text(size = 14L, 
+  face = "bold"), axis.title.x = element_text(size = 12L, face = "bold"))
+
+
+ggsave(here("Figures","Baseline_Model_evaluation","Figure1.png"),width = 7,height = 5,device = "png",dpi=300)  #save the plot
 
 #################################
 # Stochastic monte carlo model  #
@@ -149,6 +180,5 @@ for (w in 1:length(prevalence)){ ##Iterations for each prevalence
     
 ggsave(here("Figures","Baseline","Figure1.png"),width = 7,height = 5,device = "png",dpi=300)  #save the plot
   
-    
   
 } # End of the function

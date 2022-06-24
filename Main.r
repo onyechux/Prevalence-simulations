@@ -36,4 +36,4 @@ baseline(nrpl=5000,n=56,c=0.63)
 # Scenarios #
 #############
 source(here("Scripts","Scenarios.R"))
-scenarios(nrpl=50,sce_n=c(10,30,56,60,90),sce_c=c(0.01,0.1,0.63,0.8,0.9))
+scenarios(nrpl=5000,sce_n=c(10,30,56,80,102),sce_c=c(0.01,0.2,0.63,0.8,1.0))

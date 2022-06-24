@@ -177,7 +177,7 @@ for (s in 1:length(sce_n)){ #Scenarios
     theme(legend.title=element_blank())
   
   
-  ggsave(here("Figures","Scenarios","Figure2.png"),width = 7,height = 5,device = "png",dpi=300,bg = "white")  #save the plot
+  ggsave(here("Figures","Scenarios","Figure2.png"),width = 10,height = 5,device = "png",dpi=300,bg = "white")  #save the plot
   
   
   #Sva the dataframe
