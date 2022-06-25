@@ -1,39 +1,49 @@
 
-
+# Creating folders
+dir.create(here("Output","Baseline"),showWarnings = F) #Create the directory for the output
+dir.create(here("Figures","Baseline"),showWarnings = F) #Create the directory for the figure
 
 # Reading and tidy the data
 FG = read_excel(here("Data","PrevComp.xlsx"),sheet = "Sheet1",na =".")
 
 FG$Farm = as.factor(FG$Farm)
 FG$ROOM = as.factor(FG$ROOM)
-FG$FOFC=as.factor(FG$FOFC)
+FG$FOFC2 = FG$FOFC
+FG$FOFC=as.factor(FG$FOFC2)
 FG$ROOM=as.factor(FG$ROOM)
 #Categorical variable of FOF positive (1) or negative (0)
 
 # Logistic regression
 
 MF2 = glmer(FOFC~Prop_pos + (1|Farm), family = binomial(link = "logit"), data = FG, na.action = na.omit)
+pred<-predictInterval(MF2, newdata = MF2@frame, n.sims = 999,type = c("probability"),which = "fixed")
+  
+ # predict(MF2,  MF2@frame, type = "response", re.form = NA, alpha = 0.1)
 
-pred.final<-cbind.data.frame(MF2@frame,fitted=predict(MF2,  MF2@frame, type = "response", re.form = NA))
+pred.final<-cbind.data.frame(MF2@frame,fitted=pred)
 pred.final$FOFC<-as.numeric(ifelse(pred.final$FOFC==1,1,0))
 
 
-dir.create(here("Figures","Baseline"),showWarnings = F) #Create the directory for the figure
+capture.output(pred.final, file = here("Output","Baseline","Logistic_prediction.txt"), append=FALSE) #Saving crude outcome
 
-#Observed and predicted values logistic regression
+
+#################################################################
+#Creating plot to compare the observed data and predictive model#
+#################################################################
+
 ggplot(pred.final, aes(x=Prop_pos,y=FOFC))+
   theme_minimal()+
   geom_jitter(position = position_jitter(width = 0.1,height = 0.06),alpha=0.5,size=1.5,shape=21)+
-  geom_line(aes(x=Prop_pos,y=fitted),cex=1.5) + 
+  geom_line(aes(x=Prop_pos,y=fitted.fit),cex=1.5) + 
+  geom_ribbon(aes(ymin = fitted.lwr, ymax = fitted.upr), alpha = 0.1)+
   labs(x = "Within-litter prevalence", 
        y = "Probability of PRRSV detection in FOF")+ 
     theme(axis.title.y = element_text(size = 14L, face = "bold"), axis.title.x = element_text(size = 12L, face = "bold"))+
   scale_x_continuous(labels = function(Prop_pos) paste0(Prop_pos*100, "%"))
 
 
+ggsave(here("Figures","Baseline","Figure1.png"),width = 7,height = 5,device = "png",dpi=300,bg="white")  #save the plot
 
-
-ggsave(here("Figures","Baseline","Figure1.png"),width = 7,height = 5,device = "png",dpi=300)  #save the plot
 
 
 #################################
@@ -48,7 +58,7 @@ source(here("Data", "data.R"))
 baseline <- function(nrpl,n,c){
 
 for (w in 1:length(prevalence)){ ##Iterations for each prevalence
-  cat("\n\n Scenario: ", w,":",paste0(prevalence[w]*100,"%",sep=""),"\n")
+  cat("\n\n piglet_prev= ",paste0(prevalence[w]*100,"%",sep=""),"\n")
   tempo_inicial = proc.time()
 
   
@@ -112,15 +122,13 @@ for (w in 1:length(prevalence)){ ##Iterations for each prevalence
   
   final[[w]]<-list(ALP=ALP,TPL=TLP)
 
-} #End of w scenarios
+} #End of w scenarios for piglet prevalence
   
   names(final)<-paste(prevalence*100,"%",sep="") #Names for lists
   
   
-  dir.create(here("Output","Baseline"),showWarnings = F) #Create the directory for the output
+  saveRDS(final, file = here("Output","Baseline","Baseline.rds"))
   
-  
-  capture.output(final, file = here("Output","Baseline","Baseline.txt"), append=FALSE) #Saving crude outcome
   
   
   #Summary of the simulation
@@ -152,7 +160,6 @@ for (w in 1:length(prevalence)){ ##Iterations for each prevalence
                               TLP_median,
                               TLP97.5
                               )
-  
   capture.output(plot_data, file = here("Output", "Baseline","Plot_data.txt"), append=FALSE) #Saving summary outcome
   
   
@@ -168,8 +175,7 @@ for (w in 1:length(prevalence)){ ##Iterations for each prevalence
     scale_linetype_manual(values=c(1,2),labels=c("Apparent","True"))+
     labs(linetype = "Litter prevalence")
     
-ggsave(here("Figures","Baseline","Figure2.png"),width = 7,height = 5,device = "png",dpi=300)  #save the plot
+ggsave(here("Figures","Baseline","Figure2.png"),width = 7,height = 5,device = "png",dpi=300,bg="white")  #save the plot
   
-    
   
 } # End of the function
