@@ -14,6 +14,27 @@ FG$ROOM=as.factor(FG$ROOM)
 
 MF2 = glmer(FOFC~Prop_pos + (1|Farm), family = binomial(link = "logit"), data = FG, na.action = na.omit)
 
+pred.final<-cbind.data.frame(MF2@frame,fitted=predict(MF2,  MF2@frame, type = "response", re.form = NA))
+pred.final$FOFC<-as.numeric(ifelse(pred.final$FOFC==1,1,0))
+
+
+dir.create(here("Figures","Baseline"),showWarnings = F) #Create the directory for the figure
+
+#Observed and predicted values logistic regression
+ggplot(pred.final, aes(x=Prop_pos,y=FOFC))+
+  theme_minimal()+
+  geom_jitter(position = position_jitter(width = 0.1,height = 0.06),alpha=0.5,size=1.5,shape=21)+
+  geom_line(aes(x=Prop_pos,y=fitted),cex=1.5) + 
+  labs(x = "Within-litter prevalence", 
+       y = "Probability of PRRSV detection in FOF")+ 
+    theme(axis.title.y = element_text(size = 14L, face = "bold"), axis.title.x = element_text(size = 12L, face = "bold"))+
+  scale_x_continuous(labels = function(Prop_pos) paste0(Prop_pos*100, "%"))
+
+
+
+
+ggsave(here("Figures","Baseline","Figure1.png"),width = 7,height = 5,device = "png",dpi=300)  #save the plot
+
 
 #################################
 # Stochastic monte carlo model  #
@@ -97,7 +118,7 @@ for (w in 1:length(prevalence)){ ##Iterations for each prevalence
   
   
   dir.create(here("Output","Baseline"),showWarnings = F) #Create the directory for the output
-  dir.create(here("Figures","Baseline"),showWarnings = F) #Create the directory for the figure
+  
   
   capture.output(final, file = here("Output","Baseline","Baseline.txt"), append=FALSE) #Saving crude outcome
   
@@ -147,7 +168,7 @@ for (w in 1:length(prevalence)){ ##Iterations for each prevalence
     scale_linetype_manual(values=c(1,2),labels=c("Apparent","True"))+
     labs(linetype = "Litter prevalence")
     
-ggsave(here("Figures","Baseline","Figure1.png"),width = 7,height = 5,device = "png",dpi=300)  #save the plot
+ggsave(here("Figures","Baseline","Figure2.png"),width = 7,height = 5,device = "png",dpi=300)  #save the plot
   
     
   
