@@ -3,7 +3,7 @@ rm(list = ls())
 
 #Packages to be used
 packages<-c("here","tidyverse","ggplot2","gridExtra","lme4","lmtest","readxl", "DT",
-            "ggridges","viridis","hrbrthemes","tidyr","dplyr","forcats","ggpubr")
+            "ggridges","viridis","hrbrthemes","tidyr","dplyr","forcats","ggpubr","merTools")
 
 # Install packages not yet installed
 installed_packages <- packages %in% rownames(installed.packages())
