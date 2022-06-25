@@ -120,7 +120,7 @@ for (w in 1:length(prevalence)){ ##Iterations for each prevalence
 } # End of the stochastic simulation node j
   close(pb)
   
-  final[[w]]<-list(ALP=ALP,TPL=TLP)
+  final[[w]]<-data.frame(ALP=ALP,TPL=TLP)
 
 } #End of w scenarios for piglet prevalence
   
@@ -128,8 +128,55 @@ for (w in 1:length(prevalence)){ ##Iterations for each prevalence
   
   
   saveRDS(final, file = here("Output","Baseline","Baseline.rds"))
+
+  # Plot of the ALP and TLP in boxplot
+  data_names<-paste(prevalence*100,"%",sep="")
   
   
+  for(i in 1:length(data_names)){
+    PP[[i]]<-rep(data_names[i],nrpl)
+  }
+  
+  PP<-unlist(PP)
+  
+    data_plot<-do.call(rbind, final)
+    data_plot<-cbind.data.frame(data_plot,PP=PP)
+  
+    data_plot1<-data_plot%>%
+      gather(key="A_TLP", value="prev",-PP)
+    
+data_plot1%>%
+    arrange(data_plot1) %>%
+      mutate(PP = factor(PP, levels=data_names)) %>%
+    subset(PP %in% c("5%","30%","50%","70%","95%" ) )%>%
+    ggplot(aes(x=PP,y=prev,fill=A_TLP))+
+      theme_minimal()+
+      geom_boxplot()+
+      xlab("Piglet prevalence")+
+      ylab("Litter prevalence")+
+      theme(legend.position="right")+
+      scale_fill_manual(values=c(4,2),labels=c("Apparent","True"))+
+    labs(fill = "Litter prevalence")
+  
+  ggsave(here("Figures","Baseline","Figure2.png"),width = 7,height = 5,device = "png",dpi=300,bg="white")  #save the plot   
+  
+  
+  
+  
+#  data_plot1%>%
+#    arrange(data_plot1) %>%
+#    mutate(PP = factor(PP, levels=data_names)) %>%
+#    subset(PP %in% c("5%","30%","50%","70%","95%" ) )%>%
+#    ggplot(aes(x=prev,y=PP,fill=A_TLP))+
+#    theme_minimal()+
+#    geom_density_ridges(alpha = 0.4, scale = 1.5) +
+#    ylab("Piglet prevalence")+
+#    xlab("Litter prevalence")+
+#    theme(legend.position="right")+
+#    scale_fill_manual(values=c(4,2),labels=c("Apparent","True"))+
+#    labs(fill = "Litter prevalence")
+  
+   
   
   #Summary of the simulation
   for (i in 1:length(prevalence)){
@@ -167,15 +214,14 @@ for (w in 1:length(prevalence)){ ##Iterations for each prevalence
     gather(key="true_false",value="Prevalence",-prev1) #creating dataset for plot
   
   ggplot(plot_data1,aes(x=prev1*100,y=Prevalence,group=true_false))+
-    theme_bw()+
+    theme_minimal()+
     geom_line(aes(linetype = true_false))+
-    xlab("pig level prevalence")+
+    xlab("Piglet prevalence")+
     ylab("Litter prevalence")+
     theme(legend.position="right")+
     scale_linetype_manual(values=c(1,2),labels=c("Apparent","True"))+
     labs(linetype = "Litter prevalence")
     
-ggsave(here("Figures","Baseline","Figure2.png"),width = 7,height = 5,device = "png",dpi=300,bg="white")  #save the plot
-  
-  
+ggsave(here("Figures","Baseline","Figure3.png"),width = 7,height = 5,device = "png",dpi=300,bg="white")  #save the plot
+
 } # End of the function
