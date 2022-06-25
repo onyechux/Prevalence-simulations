@@ -33,13 +33,13 @@ capture.output(pred.final, file = here("Output","Baseline","Logistic_prediction.
 
 ggplot(pred.final, aes(x=Prop_pos,y=FOFC))+
   theme_minimal()+
-  geom_jitter(position = position_jitter(width = 0.1,height = 0.06),alpha=0.5,size=1.5,shape=21)+
+  geom_jitter(position = position_jitter(width = 0.01,height = 0.06),alpha=0.5,size=1.5,shape=21)+
   geom_line(aes(x=Prop_pos,y=fitted.fit),cex=1.5) + 
   geom_ribbon(aes(ymin = fitted.lwr, ymax = fitted.upr), alpha = 0.1)+
   labs(x = "Within-litter prevalence", 
        y = "Probability of PRRSV detection in FOF")+ 
     theme(axis.title.y = element_text(size = 14L, face = "bold"), axis.title.x = element_text(size = 12L, face = "bold"))+
-  scale_x_continuous(labels = function(Prop_pos) paste0(Prop_pos*100, "%"))
+  scale_x_continuous(labels = function(Prop_pos) paste0(Prop_pos*100, "%"),breaks = seq(from = 0, to = 1, by = 0.25))
 
 
 ggsave(here("Figures","Baseline","Figure1.png"),width = 7,height = 5,device = "png",dpi=300,bg="white")  #save the plot
