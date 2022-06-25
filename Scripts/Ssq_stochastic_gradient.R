@@ -8,13 +8,13 @@ FG = read_excel(here("Data","PrevComp.xlsx"),sheet = "Sheet1",na =".")
 Rm1 = subset(FG, FG$ROOM==9)  
 Rm2 = subset(FG, FG$ROOM==10)
 Rm3 = subset(FG, FG$ROOM==11)
-Rm4 = subset(FG, FG$Farm=='EAST' & FG$ROOM==12)
-Rm5 = subset(FG, FG$Farm=='EGP' & FG$ROOM==12) #All negatives
+Rm4 = subset(FG, FG$Farm=='A' & FG$ROOM==12)
+Rm5 = subset(FG, FG$Farm=='B' & FG$ROOM==12) #All negatives
 Rm6 = subset(FG, FG$ROOM==3)
 Rm7 = subset(FG, FG$ROOM==4) #All negatives
-Rm8 = subset(FG, FG$Farm=='G&W LEIBOL' & FG$ROOM==6)
-Rm9 = subset(FG, FG$Farm=='LONGRUN' & FG$ROOM==6) #All negatives
-Rm10 = subset(FG, FG$Farm=='PETE SCHNEIDER' & FG$ROOM==6)
+Rm8 = subset(FG, FG$Farm=='C' & FG$ROOM==6)
+Rm9 = subset(FG, FG$Farm=='D' & FG$ROOM==6) #All negatives
+Rm10 = subset(FG, FG$Farm=='E' & FG$ROOM==6)
 Rm11 = subset(FG, FG$ROOM==1)#All negatives
 
 
@@ -42,7 +42,7 @@ for (k in 1:nrpl){ #Each iteration is a different room by chance
 #Sampling the room
     
   
-    Rm<-get(paste("Rm",sample(c(1:4,6,8,10:11),1),sep=""))
+    Rm<-get(paste("Rm",sample(c(1:4,6,8,10),1),sep=""))
     Rm <- Rm[order(-Rm$Prop_pos),] #Rearranging rooms to have the litters with highest
     
     #Specifying prevalence and number 
