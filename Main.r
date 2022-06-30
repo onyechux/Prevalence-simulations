@@ -3,7 +3,8 @@ rm(list = ls())
 
 #Packages to be used
 packages<-c("here","tidyverse","ggplot2","gridExtra","lme4","lmtest","readxl", "DT",
-            "ggridges","viridis","hrbrthemes","tidyr","dplyr","forcats","ggpubr","merTools")
+            "ggridges","viridis","hrbrthemes","tidyr","dplyr","forcats","ggpubr","merTools", 
+            "RColorBrewer", "grid", "gtable" )
 
 # Install packages not yet installed
 installed_packages <- packages %in% rownames(installed.packages())
@@ -18,6 +19,7 @@ invisible(lapply(packages, library, character.only = TRUE))
 
 dir.create(here("Figures"))
 dir.create(here("Output"))
+
 
 ######################
 # Optimizing cluster #
@@ -36,4 +38,4 @@ baseline(nrpl=5000,n=56,c=0.63)
 # Scenarios #
 #############
 source(here("Scripts","Scenarios.R"))
-scenarios(nrpl=5000,sce_n=c(10,30,56,80,102),sce_c=c(0.01,0.2,0.63,0.8,1.0))
+scenarios(nrpl=5000,sce_n=c(10,33,56,79,102),sce_c=c(0.05,0.34,0.63,0.82,1.0))
