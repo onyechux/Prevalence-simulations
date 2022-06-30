@@ -17,8 +17,8 @@ invisible(lapply(packages, library, character.only = TRUE))
 
 #Creating dir
 
-dir.create(here("Figures"))
-dir.create(here("Output"))
+dir.create(here("Figures"),showWarnings = F)
+dir.create(here("Output"),showWarnings = F)
 
 
 ######################

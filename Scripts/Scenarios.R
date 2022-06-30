@@ -168,7 +168,8 @@ for (s in 1:length(sce_n)){ #Scenarios
   data<-rbind.data.frame(data0,data1)
   
   ####Save the plot#####
- plotp <- ggplot(data, aes(x=pig_prev,y=lit_prev,color=LP))+
+ #plotp<-function(){
+   plotp<-ggplot(data, aes(x=pig_prev,y=lit_prev,color=LP))+
     theme_minimal()+
     facet_grid(crates~cluster,)+
     geom_line()+
@@ -217,10 +218,10 @@ for (s in 1:length(sce_n)){ #Scenarios
  z <- gtable_add_rows(z, unit(1/5, "line"), min(posT$t))
  
  # Draw it
- grid.newpage()
- grid.draw(z)
-  
- ggsave(here("Figures","Scenarios","Figure2.png"),width = 10,height = 5,device = "png",dpi=300,bg = "white")  #save the plot
+  grid.newpage()
+ g<-grid.arrange(z)
+ 
+   ggsave(here("Figures","Scenarios","Figure2.png"),width = 10,height = 5,device = "png",dpi=300,bg = "white",g)  #save the plot
   
   
   #Sva the dataframe
