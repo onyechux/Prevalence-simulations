@@ -167,17 +167,60 @@ for (s in 1:length(sce_n)){ #Scenarios
   #Combinig both
   data<-rbind.data.frame(data0,data1)
   
-  #Save the plot
-  ggplot(data, aes(x=pig_prev,y=lit_prev,color=LP))+
+  ####Save the plot#####
+ plotp <- ggplot(data, aes(x=pig_prev,y=lit_prev,color=LP))+
     theme_minimal()+
-    facet_grid(crates~cluster)+
+    facet_grid(crates~cluster,)+
     geom_line()+
     ylab("Litter prevalence")+
     xlab("Piglet prevalence")+
-    theme(legend.title=element_blank())
+    theme(legend.title=element_blank(),
+          axis.text.x.top = element_blank(),       # do not show top / right axis labels
+          axis.text.y.right = element_blank(),     # for secondary axis
+          axis.title.x.top = element_blank(),      # as above, don't show axis titles for
+          axis.title.y.right = element_blank())    # secondary axis either)
   
+ # Labels 
+ labelR = "Number of crates"
+ labelT = "Clustering level"
+ 
+ # Get the ggplot grob
+ z <- ggplotGrob(plotp)
+ 
+ # Get the positions of the strips in the gtable: t = top, l = left, ...
+ posR <- subset(z$layout, grepl("strip-r", name), select = t:r)
+ posT <- subset(z$layout, grepl("strip-t", name), select = t:r)
+ 
+ # Add a new column to the right of current right strips, 
+ # and a new row on top of current top strips
+ width <- z$widths[max(posR$r)]    # width of current right strips
+ height <- z$heights[min(posT$t)]  # height of current top strips
+ 
+ z <- gtable_add_cols(z, width, max(posR$r))  
+ z <- gtable_add_rows(z, height, min(posT$t)-1)
+ 
+ # Construct the new strip grobs
+ stripR <- gTree(name = "Strip_right", children = gList(
+   rectGrob(gp = gpar(col = NA, fill = "grey85")),
+   textGrob(labelR, rot = -90, gp = gpar(fontsize = 9.0, col = "grey10"))))
+ 
+ stripT <- gTree(name = "Strip_top", children = gList(
+   rectGrob(gp = gpar(col = NA, fill = "grey85")),
+   textGrob(labelT, gp = gpar(fontsize = 9.0, col = "grey10"))))
+ 
+ # Position the grobs in the gtable
+ z <- gtable_add_grob(z, stripR, t = min(posR$t)+1, l = max(posR$r) + 1, b = max(posR$b)+1, name = "strip-right")
+ z <- gtable_add_grob(z, stripT, t = min(posT$t), l = min(posT$l), r = max(posT$r), name = "strip-top")
+ 
+ # Add small gaps between strips
+ z <- gtable_add_cols(z, unit(1/5, "line"), max(posR$r))
+ z <- gtable_add_rows(z, unit(1/5, "line"), min(posT$t))
+ 
+ # Draw it
+ grid.newpage()
+ grid.draw(z)
   
-  ggsave(here("Figures","Scenarios","Figure2.png"),width = 10,height = 5,device = "png",dpi=300,bg = "white")  #save the plot
+ ggsave(here("Figures","Scenarios","Figure2.png"),width = 10,height = 5,device = "png",dpi=300,bg = "white")  #save the plot
   
   
   #Sva the dataframe
