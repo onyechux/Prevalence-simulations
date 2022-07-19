@@ -15,6 +15,7 @@ ALP<-NULL
 TLP<- NULL
 final<-list()
 PP<-list()
+yu<- NULL
 
 prev1<-NULL
 ALP_mean<-NULL

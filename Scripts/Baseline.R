@@ -108,9 +108,17 @@ for (w in 1:length(prevalence)){ ##Iterations for each prevalence
     prev<-data.frame(Prop_pos=N/tot)
     ff = predict(MF2, prev, type = "response", re.form = NA)
     
-    pos_prop<-rbinom(length(ff),1,ff) # status of each crate in the iteration j
+    for (rt in 1:2000){
+      
+      x = rbinom(length(ff),1,ff)
+      
+      yu[rt] = (sum(x))/n
+    }
+    ALP[j] = mean(yu)
     
-    ALP[j]<-mean(pos_prop) # Proportion of observed positive crates in the iteration j
+    #pos_prop<-rbinom(length(ff),1,ff) # status of each crate in the iteration j
+    
+    #ALP[j]<-mean(pos_prop) # Proportion of observed positive crates in the iteration j
     
     TLP[j]<-mean(N>0) #Proportion of positive litters in the iteration j
     
