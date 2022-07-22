@@ -18,8 +18,14 @@ Rm10 = subset(FG, FG$Farm=='E' & FG$ROOM==6)
 Rm11 = subset(FG, FG$ROOM==1)#All negatives
 
 
+# creating output folders
+dir.create(here("Output","Cluster"),showWarnings = F)
+dir.create(here("Figures","Cluster"),showWarnings = F)
+
 
 ##Monte carlo simulation to investigate clustering level##
+
+for(g in length(grad)){
 
 arg_min=NULL
 
@@ -65,7 +71,7 @@ for (k in 1:nrpl){ #Each iteration is a different room by chance
                          width = 50,   # Progress bar width. Defaults to getOption("width")
                          char = "=")   # Character used to create the bar
     
-  for(j in 1:grad){ #stochastic gradient
+  for(j in 1:grad[g]){ #stochastic gradient
     
     
     
@@ -103,23 +109,29 @@ final_data<-cbind.data.frame(Results,cck)
 
 arg_min[k]<-final_data[which.min(final_data$Results),][2]
 
-}
+
+
+} #End node k
 
 #Results
+
 summa=list(
 summa=summary(unlist(arg_min)),
 
 IC=c(quantile(unlist(arg_min),0.025),quantile(unlist(arg_min),0.5),quantile(unlist(arg_min),0.975))
 )
 
-dir.create(here("Output","Cluster"),showWarnings = F)
+
+
+} #End node grad
+
 
 capture.output(summa, file = here("Output","Cluster","Summary.txt"))   
 
-dir.create(here("Figures","Cluster"),showWarnings = F)
 
+par(mfrow=c(1,2))
 png(here("Figures","Cluster","Cluster_opt.png"))
 hist(unlist(arg_min),main="",xlab="Clustering parameter")
 dev.off()
 
-}
+} # End function

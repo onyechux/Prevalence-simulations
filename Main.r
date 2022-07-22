@@ -25,7 +25,7 @@ dir.create(here("Output"),showWarnings = F)
 # Optimizing cluster #
 ######################
 source(here("Scripts","Ssq_stochastic_gradient.R"))
-cluster(nrpl=5000,grad=300)
+cluster(nrpl=10000,grad=1000)
 
 
 ##################
