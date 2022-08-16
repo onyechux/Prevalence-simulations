@@ -32,10 +32,10 @@ cluster(nrpl=10000,grad=1000)
 # Baseline model #
 ##################
 source(here("Scripts","Baseline.R"))
-baseline(nrpl=5000,n=56,c=0.63)
+baseline(nrpl=5000,n=56,c=0.61)
 
 #############
 # Scenarios #
 #############
 source(here("Scripts","Scenarios.R"))
-scenarios(nrpl=5000,sce_n=c(10,33,56,79,102),sce_c=c(0.05,0.34,0.63,0.82,1.0))
+scenarios(nrpl=5000,sce_n=c(10,33,56,79,102),sce_c=c(0.05,0.33,0.61,0.81,1.0))

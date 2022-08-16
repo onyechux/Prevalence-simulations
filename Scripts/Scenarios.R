@@ -92,9 +92,18 @@ for (s in 1:length(sce_n)){ #Scenarios
       prev<-data.frame(Prop_pos=N/tot)
       ff = predict(MF2, prev, type = "response", re.form = NA)
       
-      pos_prop<-rbinom(length(ff),1,ff) # status of each crate in the iteration j
+      #pos_prop<-rbinom(length(ff),1,ff) # status of each crate in the iteration j
       
-      ALP[j]<-mean(pos_prop) # Proportion of observed positive crates in the iteration j
+      for (rt in 1:2000){
+        
+        x = rbinom(length(ff),1,ff)
+        
+        yu[rt] = (sum(x))/sce_n[s]
+      }
+      
+      ALP[j] = mean(yu) # Proportion of observed positive crates in the iteration j
+      
+      #ALP[j]<-mean(pos_prop) # Proportion of observed positive crates in the iteration j
       
       TLP[j]<-mean(N>0) #Proportion of positive litters in the iteration j
       
@@ -103,8 +112,8 @@ for (s in 1:length(sce_n)){ #Scenarios
       
     } # End of the stochastic simulation node j
     
-    ALP_me[[s]][w]<-mean(ALP)
-    TLP_me[[s]][w]<-mean(TLP)
+    ALP_me[[s]][w]<-median(ALP)
+    TLP_me[[s]][w]<-median(TLP)
     
     
     
