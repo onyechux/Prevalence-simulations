@@ -3,3 +3,9 @@
 .RData
 .Ruserdata
 metropolis_hastings.R
+.DS_Store
+
+Data/
+Documents/
+Literature/
+Paper Drafts/
