@@ -26,6 +26,17 @@ pred.final$FOFC<-as.numeric(ifelse(pred.final$FOFC==1,1,0))
 
 capture.output(pred.final, file = here("Output","Baseline","Logistic_prediction.txt"), append=FALSE) #Saving crude outcome
 
+##Model Evaluation by AUC##
+predic = predict(MF2, type = "response") #Model predictions
+
+roccurve <- roc(FG$FOFC ~ predic) #Evaluating model performance
+
+#Plot#
+plot(roccurve) #ROC curve
+
+#AUC#
+auc(FG$FOFC, predic) #Model looks great
+
 
 #################################################################
 #Creating plot to compare the observed data and predictive model#
